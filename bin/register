@@ -4,27 +4,47 @@ require 'nippo'
 require 'optparse'
 
 module Nippo
-  def self.register_task(options)
-    server = Nippo::Server.new('203.209.151.152', 'dooga', 'ldooga1')
-    server.login('oyama-hiroyasu', '54q9JBBa')
-    
+  TASK_TITLE = '定常業務'
+  TASK_CODE = '03000800159'
+
+  def self.register_task(opts)
+    server = Nippo::Server.new(opts[:server], opts[:auth_u], opts[:auth_p])
     begin
-      context = Nippo::Task.get_context
-    rescue Exception => _
+      if server.login(opts[:login_u], opts[:login_p])
+        context = Nippo::Task.get_context
+        registry_info = opts.merge({
+          :code => TASK_CODE,
+          :title => TASK_TITLE,
+          :context => context,
+        })
+
+        #server.set_am_task_old(registry_info)
+        server.set_am_task(registry_info)
+      end
+    rescue Exception => e
+      p e
     end
   end
 end
 
 options = {}
 OptionParser.new do |opt|
-	opt.on('-d', '--day', 'the day to register') { |v| options[:task_day] = v }
-	opt.on('-m', '--month', 'the month to register') { |v| options[:task_month] = v }
-	opt.on('-y', '--year', 'the year to register') { |v| options[:task_year] = v }
-	opt.on('-s', '--server', 'host address of Nippo service') { |v| options[:server] = v }
-	opt.on('-U', '--basic_user', 'userid of BASIC authentication') { |v| options[:user] = v }
-	opt.on('-P', '--basic_password', 'password to access Nippo service') { |v| options[:password] = v }
-	opt.on('-u', '--login_user', 'userid of your-self to login') { |v| options[:user] = v }
-	opt.on('-p', '--login_password', 'password which is related to your account') { |v| options[:password] = v }
+	opt.on('-d day', '--day', 'the day to register') { |value|
+    options[:day] = value.to_i < 10 ? "0#{value}" : value }
+	opt.on('-m mon', '--month', 'the month to register') { |value|
+    options[:month] = value.to_i < 10 ? "0#{value}" : value }
+	opt.on('-y year', '--year', 'the year to register') { |value|
+    options[:year] = value }
+	opt.on('-s hostaddr', '--server', 'host address of Nippo servalueice') { |value|
+    options[:server] = value }
+	opt.on('-U uid', '--basic_user', 'userid of BASIC authentication') { |value|
+    options[:auth_u] = value }
+	opt.on('-P passwd', '--basic_password', 'password to access Nippo servalueice') {|value|
+    options[:auth_p] = value }
+	opt.on('-u uid', '--login_user', 'userid of your-self to login') { |value|
+    options[:login_u] = value }
+	opt.on('-p passwd', '--login_password', 'password which is related to your account') { |value|
+    options[:login_p] = value }
 
 	opt.parse! ARGV
 end

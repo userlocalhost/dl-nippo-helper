@@ -9,27 +9,43 @@ module Nippo
       @basic_passwd = passwd
 
       @logged_in = false
+      @cookie = nil
     end
 
     def login(user, passwd)
-      url = URI.parse("http://#{@host}/new_nippou/users/login")
-      req = Net::HTTP::Post.new(url.path)
-      req.basic_auth(@basic_user, @basic_passwd)
-      req.set_form_data({
-        'data[User][userid]' => user,
-        'data[User][password]' => passwd,
-        'logincheck' => '',
+      resp = post({
+        :path => 'new_nippou/users/login',
+        :data => {
+          'data[User][userid]' => user,
+          'data[User][password]' => passwd,
+          'logincheck' => '',
+        },
       })
-      resp = Net::HTTP.new(url.host, url.port).start do |http|
-         http.request(req)
-      end
       @cookie = resp.get_fields('set-cookie').map{|x| x.split(';').first}.join(';')
 
       # When login processin is successful, responce code 302 (Net::HTTPFound) is returned.
       @logged_in = resp.class == Net::HTTPFound
     end
-
-    def set_am_task(code, title, context)
+    def set_am_task(opts)
+      post({
+        :path => "new_nippou/inputs/nippou/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/#am",
+        :data => {
+          'data[Amtask][name]' => opts[:code],
+          'data[Amtask][taskcodename]' => opts[:code],
+          'data[Amtask][title]' => opts[:title].encode('EUC-JP'),
+          'data[Amtask][SH]' => '10',
+          'data[Amtask][SM]' => '00',
+          'data[Amtask][EH]' => '13',
+          'data[Amtask][EM]' => '00',
+          'data[Amtask][comment]' => opts[:context].encode('EUC-JP'),
+          'data[Amtask][plan]' => '',
+          'data[Amtask][subject]' => '',
+          'data[Amtask][opinion]' => '',
+          'data[Amtask][other]' => '',
+          'amregist' => '1',
+          'data[Amtask][id]' => '',
+        },
+      })
     end
 
     def set_pm_task(code, title, context)
@@ -43,6 +59,22 @@ module Nippo
 
     def logged_in?
       @logged_in
+    end
+
+    private
+    def post(opts)
+      url = URI.parse("http://#{@host}/#{opts[:path]}")
+
+      # setting request parameters
+      req = Net::HTTP::Post.new(url.path)
+      req.basic_auth(@basic_user, @basic_passwd)
+      req.set_form_data(opts[:data])
+      req['Cookie'] = @cookie
+
+      # send http post request
+      Net::HTTP.new(url.host, url.port).start do |http|
+         http.request(req)
+      end
     end
   end
 end
