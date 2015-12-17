@@ -1,5 +1,3 @@
 require "nippo/version"
-
-module Nippo
-  # Your code goes here...
-end
+require "nippo/server"
+require "nippo/task"
