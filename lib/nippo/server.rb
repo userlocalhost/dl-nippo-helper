@@ -48,13 +48,48 @@ module Nippo
       })
     end
 
-    def set_pm_task(code, title, context)
+    def set_pm_task(opts)
+      post({
+        :path => "new_nippou/inputs/nippou/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/#pm",
+        :data => {
+          'data[Pmtask][name]' => opts[:code],
+          'data[Pmtask][taskcodename]' => opts[:code],
+          'data[Pmtask][title]' => opts[:title].encode('EUC-JP'),
+          'data[Pmtask][SH]' => '14',
+          'data[Pmtask][SM]' => '00',
+          'data[Pmtask][EH]' => '19',
+          'data[Pmtask][EM]' => '00',
+          'data[Pmtask][comment]' => opts[:context].encode('EUC-JP'),
+          'data[Pmtask][plan]' => '',
+          'data[Pmtask][subject]' => '',
+          'data[Pmtask][opinion]' => '',
+          'data[Pmtask][other]' => '',
+          'pmregist' => '1',
+          'data[Pmtask][id]' => '',
+        },
+      })
     end
 
-    def set_rest
+    def set_rest(opts)
+      post({
+        :path => "new_nippou/inputs/nippou/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/#rest",
+        :data => {
+          'data[Rest][SH]' => '13',
+          'data[Rest][SM]' => '00',
+          'data[Rest][EH]' => '14',
+          'data[Rest][EM]' => '00',
+          'registresttime' => '登録'.encode('EUC-JP'),
+        },
+      })
     end
 
-    def pre_submit
+    def submit(opts)
+      post({
+        :path => "new_nippou/inputs/nippouend/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/",
+        :data => {
+          'data[Mail][memo]' => '',
+        },
+      })
     end
 
     def logged_in?

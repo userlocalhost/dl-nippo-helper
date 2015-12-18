@@ -20,6 +20,13 @@ module Nippo
 
         #server.set_am_task_old(registry_info)
         server.set_am_task(registry_info)
+        server.set_rest(registry_info)
+        server.set_pm_task(registry_info)
+        server.submit(registry_info)
+
+        puts "Successfull to upload"
+      else
+        puts "ERROR: failed to login, please check your id/password."
       end
     rescue Exception => e
       p e
@@ -28,7 +35,13 @@ module Nippo
 end
 
 options = {}
-OptionParser.new do |opt|
+parser = OptionParser.new do |opt|
+  opt.banner = <<-EOS
+Usage: register [parameters]
+
+Parameters (All parameters are mandatory for registry):
+  EOS
+  #opt.banner = "All options are compulsory for registry"
 	opt.on('-d day', '--day', 'the day to register') { |value|
     options[:day] = value.to_i < 10 ? "0#{value}" : value }
 	opt.on('-m mon', '--month', 'the month to register') { |value|
@@ -47,6 +60,17 @@ OptionParser.new do |opt|
     options[:login_p] = value }
 
 	opt.parse! ARGV
+end
+
+def is_valid? opts
+  [:day, :month, :year, :server, :auth_u, :auth_p, :login_u, :login_p].all? do |key|
+    opts[key] != nil
+  end
+end
+
+unless is_valid?(options)
+  puts parser.help
+  exit 1
 end
 
 Nippo.register_task(options)
