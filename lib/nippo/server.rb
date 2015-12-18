@@ -15,8 +15,8 @@ module Nippo
       @task_title = opts[:title]
       @task_context = opts[:context]
 
-      @day = opts[:day]
-      @month = opts[:month]
+      @day = opts[:day].to_i < 10 ? "0#{opts[:day]}" : opts[:day]
+      @month = opts[:month].to_i < 10 ? "0#{opts[:month]}" : opts[:month]
       @year = opts[:year]
 
       @logged_in = false

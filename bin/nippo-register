@@ -46,11 +46,11 @@ Usage: register [parameters]
 Parameters (All parameters are mandatory for registry):
   EOS
   #opt.banner = "All options are compulsory for registry"
-	opt.on('-d day', '--day', 'the day to register') { |value|
-    options[:day] = value.to_i < 10 ? "0#{value}" : value }
-	opt.on('-m mon', '--month', 'the month to register') { |value|
-    options[:month] = value.to_i < 10 ? "0#{value}" : value }
-	opt.on('-y year', '--year', 'the year to register') { |value|
+	opt.on('-d [day]', '--day', 'the day to register (DEFAULT: today)') { |value|
+    options[:day] = value }
+	opt.on('-m [mon]', '--month', 'the month to register (DEFAULT: current month)') { |value|
+    options[:month] = value }
+	opt.on('-y [year]', '--year', 'the year to register (DEFAULT: current year)') { |value|
     options[:year] = value }
 	opt.on('-s hostaddr', '--server', 'host address of Nippo servalueice') { |value|
     options[:server] = value }
@@ -66,12 +66,33 @@ Parameters (All parameters are mandatory for registry):
 	opt.parse! ARGV
 end
 
+DEFAULT_KEYS = [:day, :month, :year, :server, :auth_u, :auth_p, :login_u, :login_p]
+def set_default_params(opts)
+  ret = {}
+  DEFAULT_KEYS.each do |key|
+    value = opts[key]
+
+    ret[key] = case key
+    when :day
+      value != nil ? value : Time.now.day
+    when :month
+      value != nil ? value : Time.now.month
+    when :year
+      value != nil ? value : Time.now.year
+    else
+      value
+    end
+  end
+
+  ret
+end
 def is_valid? opts
-  [:day, :month, :year, :server, :auth_u, :auth_p, :login_u, :login_p].all? do |key|
+  DEFAULT_KEYS.all? do |key|
     opts[key] != nil
   end
 end
 
+options = set_default_params(options)
 unless is_valid?(options)
   puts parser.help
   exit 1
