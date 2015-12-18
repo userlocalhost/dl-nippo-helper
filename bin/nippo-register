@@ -8,21 +8,25 @@ module Nippo
   TASK_CODE = '03000800159'
 
   def self.register_task(opts)
-    server = Nippo::Server.new(opts[:server], opts[:auth_u], opts[:auth_p])
+    server = Nippo::Server.new({
+      :server => opts[:server],
+      :auth_user => opts[:auth_u],
+      :auth_passwd => opts[:auth_p],
+      :login_user => opts[:login_u],
+      :login_passwd => opts[:login_p],
+      :day => opts[:day],
+      :month => opts[:month],
+      :year => opts[:year],
+      :code => TASK_CODE,
+      :title => TASK_TITLE,
+      :context => Nippo::Task.get_context,
+    })
     begin
-      if server.login(opts[:login_u], opts[:login_p])
-        context = Nippo::Task.get_context
-        registry_info = opts.merge({
-          :code => TASK_CODE,
-          :title => TASK_TITLE,
-          :context => context,
-        })
-
-        #server.set_am_task_old(registry_info)
-        server.set_am_task(registry_info)
-        server.set_rest(registry_info)
-        server.set_pm_task(registry_info)
-        server.submit(registry_info)
+      if server.login
+        server.set_am_task
+        server.set_rest
+        server.set_pm_task
+        server.submit
 
         puts "Successfull to upload"
       else

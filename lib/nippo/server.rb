@@ -3,21 +3,32 @@ require 'uri'
 
 module Nippo
   class Server
-    def initialize(host, user, passwd)
-      @host = host
-      @basic_user = user
-      @basic_passwd = passwd
+    def initialize(opts)
+      @host = opts[:server]
+      @basic_user = opts[:auth_user]
+      @basic_passwd = opts[:auth_passwd]
+
+      @login_user = opts[:login_user]
+      @login_passwd = opts[:login_passwd]
+
+      @task_code = opts[:code]
+      @task_title = opts[:title]
+      @task_context = opts[:context]
+
+      @day = opts[:day]
+      @month = opts[:month]
+      @year = opts[:year]
 
       @logged_in = false
       @cookie = nil
     end
 
-    def login(user, passwd)
+    def login
       resp = post({
         :path => 'new_nippou/users/login',
         :data => {
-          'data[User][userid]' => user,
-          'data[User][password]' => passwd,
+          'data[User][userid]' => @login_user,
+          'data[User][password]' => @login_passwd,
           'logincheck' => '',
         },
       })
@@ -26,18 +37,18 @@ module Nippo
       # When login processin is successful, responce code 302 (Net::HTTPFound) is returned.
       @logged_in = resp.class == Net::HTTPFound
     end
-    def set_am_task(opts)
+    def set_am_task
       post({
-        :path => "new_nippou/inputs/nippou/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/#am",
+        :path => "new_nippou/inputs/nippou/#{@year}/#{@month}/#{@day}/#am",
         :data => {
-          'data[Amtask][name]' => opts[:code],
-          'data[Amtask][taskcodename]' => opts[:code],
-          'data[Amtask][title]' => opts[:title].encode('EUC-JP'),
+          'data[Amtask][name]' => @task_code,
+          'data[Amtask][taskcodename]' => @task_code,
+          'data[Amtask][title]' => @task_title.encode('EUC-JP'),
           'data[Amtask][SH]' => '10',
           'data[Amtask][SM]' => '00',
           'data[Amtask][EH]' => '13',
           'data[Amtask][EM]' => '00',
-          'data[Amtask][comment]' => opts[:context].encode('EUC-JP'),
+          'data[Amtask][comment]' => @task_context.encode('EUC-JP'),
           'data[Amtask][plan]' => '',
           'data[Amtask][subject]' => '',
           'data[Amtask][opinion]' => '',
@@ -48,18 +59,18 @@ module Nippo
       })
     end
 
-    def set_pm_task(opts)
+    def set_pm_task
       post({
-        :path => "new_nippou/inputs/nippou/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/#pm",
+        :path => "new_nippou/inputs/nippou/#{@year}/#{@month}/#{@day}/#pm",
         :data => {
-          'data[Pmtask][name]' => opts[:code],
-          'data[Pmtask][taskcodename]' => opts[:code],
-          'data[Pmtask][title]' => opts[:title].encode('EUC-JP'),
+          'data[Pmtask][name]' => @task_code,
+          'data[Pmtask][taskcodename]' => @task_code,
+          'data[Pmtask][title]' => @task_title.encode('EUC-JP'),
           'data[Pmtask][SH]' => '14',
           'data[Pmtask][SM]' => '00',
           'data[Pmtask][EH]' => '19',
           'data[Pmtask][EM]' => '00',
-          'data[Pmtask][comment]' => opts[:context].encode('EUC-JP'),
+          'data[Pmtask][comment]' => @task_context.encode('EUC-JP'),
           'data[Pmtask][plan]' => '',
           'data[Pmtask][subject]' => '',
           'data[Pmtask][opinion]' => '',
@@ -70,9 +81,9 @@ module Nippo
       })
     end
 
-    def set_rest(opts)
+    def set_rest
       post({
-        :path => "new_nippou/inputs/nippou/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/#rest",
+        :path => "new_nippou/inputs/nippou/#{@year}/#{@month}/#{@day}/#rest",
         :data => {
           'data[Rest][SH]' => '13',
           'data[Rest][SM]' => '00',
@@ -83,9 +94,9 @@ module Nippo
       })
     end
 
-    def submit(opts)
+    def submit
       post({
-        :path => "new_nippou/inputs/nippouend/#{opts[:year]}/#{opts[:month]}/#{opts[:day]}/",
+        :path => "new_nippou/inputs/nippouend/#{@year}/#{@month}/#{@day}/",
         :data => {
           'data[Mail][memo]' => '',
         },
