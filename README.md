@@ -1,15 +1,11 @@
 # Nippo
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/nippo`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
 
-```ruby
-gem 'nippo'
+```
+gem 'dl-nippo-helper'
 ```
 
 And then execute:
@@ -18,24 +14,33 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install nippo
+    $ gem install dl-nippo-helper
 
 ## Usage
+You can register a daily task record (so-called `Nippo`) from `nippo-register`. Here is the usage.
+```
+Usage: register [parameters]
 
-TODO: Write usage instructions here
+Parameters (All parameters are mandatory for registry):
+  -d, --day [day]                  the day to register (DEFAULT: today)
+  -m, --month [mon]                the month to register (DEFAULT: current month)
+  -y, --year [year]                the year to register (DEFAULT: current year)
+  -s, --server hostaddr            host address of Nippo servalueice
+  -U, --basic_user uid             userid of BASIC authentication
+  -P, --basic_password passwd      password to access Nippo servalueice
+  -u, --login_user uid             userid of your-self to login
+  -p, --login_password passwd      password which is related to your account
+```
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/nippo. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
-
+To register a `Nippo` on current day, you can do it with following. Context of Nippo would be specified from STDIN.
+```
+$ nippo-register -s 203.209.xxx.yyy \
+                 -U nippo-user \
+                 -P password \
+                 -u ohyama-hiroyasu\
+                 -p XXXXXXX < context-file
+```
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
