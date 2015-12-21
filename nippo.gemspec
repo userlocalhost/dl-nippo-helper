@@ -4,20 +4,20 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'nippo/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "nippo"
+  spec.name          = "dl-nippo-helper"
   spec.version       = Nippo::VERSION
   spec.authors       = ["Hiroyasu OHYAMA"]
   spec.email         = ["user.localhost2000@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{An useful tool to register daily task}
+  spec.description   = %q{You can automate the task to register your nippo at the end of each month.}
+  spec.homepage      = "https://rubygems.org/gems/dl-nippo-helper"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
   if spec.respond_to?(:metadata)
-    spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+    spec.metadata['allowed_push_host'] = ""
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
   end
