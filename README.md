@@ -1,4 +1,8 @@
 # Nippo
+Nippo release the pain of registering daily task records (so-called `Nippo`) at the end of each month.
+
+## Prerequisite
+* Ruby 2.0.0 or higher
 
 ## Installation
 
@@ -17,7 +21,7 @@ Or install it yourself as:
     $ gem install dl-nippo-helper
 
 ## Usage
-You can register a daily task record (so-called `Nippo`) from `nippo-register`. Here is the usage.
+You can register a `Nippo` from `nippo-register`. Here is the usage.
 ```
 Usage: register [parameters]
 
@@ -32,7 +36,7 @@ Parameters (All parameters are mandatory for registry):
   -p, --login_password passwd      password which is related to your account
 ```
 
-To register a `Nippo` on current day, you can do it with following. Context of Nippo would be specified from STDIN.
+To register a `Nippo` on current day, you can do it with following. Context of `Nippo` would be specified from STDIN.
 ```
 $ nippo-register -s 203.209.xxx.yyy \
                  -U nippo-user \
