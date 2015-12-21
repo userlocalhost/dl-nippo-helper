@@ -5,7 +5,7 @@
 Add this line to your application's Gemfile:
 
 ```
-gem 'dl-nippo-helper'
+gem 'dl-nippo-helper-xaas'
 ```
 
 And then execute:
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install dl-nippo-helper
+    $ gem install dl-nippo-helper-xaas
 
 ## Usage
 You can register a daily task record (so-called `Nippo`) from `nippo-register`. Here is the usage.
