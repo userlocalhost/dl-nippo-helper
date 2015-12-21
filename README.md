@@ -38,8 +38,9 @@ $ nippo-register -s 203.209.xxx.yyy \
                  -U nippo-user \
                  -P password \
                  -u ohyama-hiroyasu\
-                 -p XXXXXXX < context-file
+                 -p XXXXXXX
 ```
+You don't have to input the context of `Nippo` by grace of `xaas` plugin that input appropriate context automatically.
 
 ## License
 
