@@ -17,8 +17,8 @@ module Nippo
       :day => opts[:day],
       :month => opts[:month],
       :year => opts[:year],
-      :code => TASK_CODE,
-      :title => TASK_TITLE,
+      :code => opts[:task_code],
+      :title => opts[:task_title],
       :context => Nippo::Task.get_context,
     })
     begin
@@ -34,6 +34,7 @@ module Nippo
       end
     rescue Exception => e
       p e
+      puts e.backtrace
     end
   end
 end
@@ -62,11 +63,15 @@ Parameters (All parameters are mandatory for registry):
     options[:login_u] = value }
 	opt.on('-p passwd', '--login_password', 'password which is related to your account') { |value|
     options[:login_p] = value }
+	opt.on('-c code', '--task_code', 'task-code which is configured in company (DEFAULT: 03000800159)') { |value|
+    options[:task_code] = value }
+	opt.on('-t title', '--task_title', 'describes the title of creating task (DEFAULT: 定常業務)') { |value|
+    options[:task_title] = value }
 
 	opt.parse! ARGV
 end
 
-DEFAULT_KEYS = [:day, :month, :year, :server, :auth_u, :auth_p, :login_u, :login_p]
+DEFAULT_KEYS = [:day, :month, :year, :server, :auth_u, :auth_p, :login_u, :login_p, :task_code, :task_title]
 def set_default_params(opts)
   ret = {}
   DEFAULT_KEYS.each do |key|
@@ -79,6 +84,10 @@ def set_default_params(opts)
       value != nil ? value : Time.now.month
     when :year
       value != nil ? value : Time.now.year
+    when :task_title
+      value != nil ? value : Nippo::TASK_TITLE
+    when :task_code
+      value != nil ? value : Nippo::TASK_CODE
     else
       value
     end
