@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'nippo/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "nippo"
+  spec.name          = "dl-nippo-helper"
   spec.version       = Nippo::VERSION
   spec.authors       = ["Hiroyasu OHYAMA"]
   spec.email         = ["user.localhost2000@gmail.com"]
